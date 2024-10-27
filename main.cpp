@@ -35,13 +35,31 @@ public:
 };
 
 
-int main(){
-    Matrix m(3,3);
-    double detM=m.Determinant(m);
-    cout<<endl;
-    m.PrintMatrix(m);
-    cout<<"Detmerinant of Matrix: "<<detM<<endl;
+int GCF(int a,int b){
+    int factor=1,n=1;
+    
+    while(n <= a || n<=b){
+        if(a%n==0 && b%n==0){
+            factor=n;
+        }
+        n++;
+    }
+    return factor;
+}
 
+int main(){
+    
+
+    Matrix m(3,4);
+//    double detM=m.Determinant(m);
+//    cout<<endl;
+    m.PrintMatrix(m);
+//    cout<<"Detmerinant of Matrix: "<<detM<<endl;
+
+    cout<<"\n\n";
+    cout<<"Row Reduced Echelon Form: "<<endl;
+    Matrix rrefM=m.RREF(m);
+    rrefM.PrintMatrix(rrefM);
     return 0;
 }
 

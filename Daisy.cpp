@@ -223,32 +223,68 @@ double Matrix::Determinant(Matrix m){
     return det;
 }
 
+Matrix SwapRows(Matrix m, int RowOne,int RowTwo){
+    vector<vector<double>> D=m.GetData();
+    int rows=D.size(),columns=D[0].size();
+    for(int j=0; j<columns;j++){
+        int temp=D[RowOne][j];
+        D[RowOne][j]=D[RowTwo][j];
+        D[RowTwo][j]=temp;
+    }
+    Matrix NM(D);
+    
+    return NM;
+}
+
 Matrix Matrix::RREF(Matrix m){
-    int rows=m.GetRows(),columns=m.GetColumns();
+    vector<vector<double>> data=m.GetData();
+    int rows=data.size(),columns=data[0].size();
     int lead=0; //initalize pivot position;
     
-    vector<vector<double>> rrefM=m.GetData();
     
-    for(int r=0; r<rows-1; r++){
-        if(lead>=columns){
+    for(int r=0; r<rows; r++){
+        if(columns<=lead){
             return m;
         }
         //Step 1: Find the pivot row.
         int i=r;
-        while(rrefM[i][lead]==0){
+        while(data[i][lead]==0){
             i++;
             if(i==rows){
                 i=r;
                 lead++;
-                if(lead>=columns){
+                if(lead==columns){
                     return m;
                 }
             }
         }
+        //Step 2: Swapping Rows
+        if (i!=r){
+            m=SwapRows(m, i, r);
+            data=m.GetData(); // The data is updated after the rows are switched. 
+        }
         
+        //Step 3: Scale the pivot row th make pivot element equal to 1
+        double pivot=data[r][lead];
+        if(pivot!=0){
+            for(int j=0; j<columns; j++){
+                data[r][j] /= pivot;
+            }
+        }
+        
+        //Step 4: Add/Multiply Rows
+        for(int k=0; k<rows;k++){
+            if(k!=r){
+                double scale=data[k][lead];
+                    for(int j=0; j<columns; j++){
+                        data[k][j]-=scale*data[r][j];
+                    }
+                }
+            }
+            lead++;
     }
     
    
-    m=Matrix(rrefM);
+    m=Matrix(data); //The modified data is assigned to the original matrix.
     return m;
 }

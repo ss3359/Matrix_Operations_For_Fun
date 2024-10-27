@@ -23,6 +23,8 @@
 #include "Carnation.hpp"
 using namespace std;
 
+
+
 class Matrix{
 private:
     int rows,columns;
@@ -44,10 +46,11 @@ public:
     
 };
 
-//Operator Overloading For Matrix Class
+//Operators and Operatior Overloading Functions For Matrix Class
 Matrix operator+(Matrix m, Matrix n);
 Matrix operator-(Matrix m, Matrix n);
 Matrix operator*(Matrix m, Matrix n);
 Matrix operator*(Matrix m,double s);
 Matrix operator+(Matrix m,double s);
+Matrix SwapRows(Matrix m, int RowOne, int RowTwo);
 #endif /* Daisy_hpp */
