@@ -78,9 +78,65 @@ Matrix Matrix::I(Matrix m){
 }
 
 
+vector<double> GetColumn(vector<vector<double>> m, int columnIndex){
+    
+    int rows=m.size();
+    vector<double> col(rows);
+    
+    for(int i=0; i<rows; i++){
+        col[i]=m[i][columnIndex];
+    }
+    return col;
+}
 
+vector<double> Proj(vector<double> a, vector<double>b){
+    /*
+     This will be the vector projection from the vector b onto the vector a; a is the row vector, a and b are two column vectors in Matrix M.
+     */
+    
+    double num=0,den=0;
+    int size=a.size();
+    for(int i=0; i<size; i++){
+        num+=a[i]*b[i];
+        den+=a[i]*a[i];
+    }
+    double cons=num/den;
+    
+    vector<double> result(size);
+    for(int i=0; i<size; i++){
+        result[i]=cons*a[i];
+    }
+    
+    
+    return result;
+    
+}
 
-
+//This is the Gram Schmidt Process
+Matrix Matrix::GramSchmidt(Matrix m){
+    int col=m.GetColumns();
+    int row=m.GetRows();
+    vector<vector<double>> result(row,vector<double>(col));
+    
+    for(int j=0; j<col; j++){
+        vector<double> v(row);
+        for(int i=0; i<row; i++){
+            v[i]=m.GetData()[i][j];
+        }
+        for(int k=0; k<j; k++){
+            vector<double> proj=Proj(GetColumn(result,k), v);
+            for(int i=0; i<row; i++){
+                v[i]-=proj[i];
+            }
+        }
+        
+        for(int i=0; i<row; i++){
+            result[i][j]=v[i];
+        }
+    
+    }
+    return Matrix(result);
+}
 
 //Operatior Overloading For Matrix Class
 Matrix operator+(Matrix m, Matrix n){
@@ -158,6 +214,14 @@ Matrix operator*(Matrix m, Matrix n){
 
 
 //Operator Overloading For Scalar Operations
+
+double operator*(vector<double> u, vector<double> v){
+    double result=0;
+    for(int i=0; i<sizeof(u); i++){
+        result+=u[i]*v[i];
+    }
+    return result; 
+}
 
 Matrix operator*(Matrix m, double s){
     vector<vector<double>> RD, MData=m.GetData();
@@ -288,3 +352,67 @@ Matrix Matrix::RREF(Matrix m){
     m=Matrix(data); //The modified data is assigned to the original matrix.
     return m;
 }
+
+//Subtract Vectors:
+vector<double> operator-(vector<double>a, vector<double>b){
+    
+    int length=a.size();
+    vector<double> result(length);
+    
+    for(int i=0; i<length; i++){
+        result[i]=a[i]-b[i];
+    }
+    return result;
+};
+
+vector<double> operator+=(vector<double>a, vector<double>b){
+    int length=a.size();
+    vector<double> result(length);
+    for (int j=0; j<length; j++){
+        a[j]+=b[j];
+    }
+    
+    return a;
+}
+
+//Function For Polynomial Class:
+Poly::Poly(int n){
+    for(int i=0; i<n; i++){
+        cout<<"Enter Coefficent For X^"<<i<<endl;
+        cin>>coefficients[i];
+    }
+}
+
+void Poly::PrintPolynomial(Poly p){
+    for(int d=0; d<p.degree; d++){
+        cout<<coefficients[d]<<"x^"<<d;
+    }
+}
+
+//
+///*
+// Excess Code:
+// vector<double> Proj(Matrix m, int a, int b){
+//     /*
+//      This will be the vector projection from the vector b onto the vector a; a is the row vector, a and b are two column vectors in Matrix M.
+//      */
+//     int col=m.GetColumns();
+//     vector<double> A(col),B(col),result(col);
+//     double num=0,den=0,cons=0;
+//     for(int j=0; j<m.GetColumns(); j++){
+//         A[j]=m.GetData()[j][a];
+//         B[j]=m.GetData()[j][b];
+//     }
+//     
+//     for(int j=0; j<col; j++){
+//         num+=A[j]*B[j];
+//         den+=A[j]*A[j];
+//     }
+//     cons=num/den;
+//     
+//     for(int j=0; j<A.size(); j++){
+//         result[j]=A[j]*cons;
+//     }
+//     return result;
+// }
+// */
