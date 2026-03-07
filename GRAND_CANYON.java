@@ -574,4 +574,109 @@ double[][] Q = A.GramSchmidt(A);
         System.out.println();
 
         A.Eigenvalues(A);
+        
+*/
+
+
+
+
+/*
+
+#include <gtest/gtest.h>
+
+#include <exception>          // must be before the helper that uses std::exception
+#include <type_traits>        // for std::is_base_of, std::is_nothrow_*
+#include <string>             // for std::string
+
+
+#include "mppe/traj/TrajectoryException.h"
+
+static std::string what_str(const std::exception& e)
+{
+    // `e.what()` returns a C‑string (may be nullptr for a default‑constructed exception)
+    return e.what() ? std::string(e.what()) : std::string{};
+}
+
+
+
+// Verify that TrajectoryException really derives from std::runtime_error
+static_assert(std::is_base_of<std::runtime_error,
+                              mppe::TrajectoryException>::value,
+              "TrajectoryException must derive from std::runtime_error");
+
+// Verify that the default constructor is declared noexcept
+static_assert(std::is_nothrow_default_constructible<mppe::TrajectoryException>::value,
+              "Default ctor must be noexcept");
+
+
+TEST(TrajectoryException, DefaultConstructor)
+{
+    mppe::TrajectoryException ex;               // calls ctor(v = -1, s = nullptr)
+
+    EXPECT_EQ(ex.value(), -1);                  // default value
+    EXPECT_EQ(what_str(ex), "");                // empty message
+}
+
+TEST(TrajectoryException, MessageOnlyConstructor)
+{
+    const char* msg = "trajectory failure";
+    mppe::TrajectoryException ex(msg);
+
+    EXPECT_EQ(ex.value(), -1);                  // value stays at default
+    EXPECT_EQ(what_str(ex), std::string(msg));
+}
+
+
+TEST(TrajectoryException, FullConstructor)
+{
+    const char* msg = "out of bounds";
+    const std::int32_t code = 42;
+
+    mppe::TrajectoryException ex(code, msg);
+
+    EXPECT_EQ(ex.value(), code);
+    EXPECT_EQ(what_str(ex), std::string(msg));
+}
+
+
+TEST(TrajectoryException, FullConstructor_NullMessage)
+{
+    const std::int32_t code = -99;
+    mppe::TrajectoryException ex(code, nullptr);
+
+    EXPECT_EQ(ex.value(), code);
+    EXPECT_EQ(what_str(ex), "");               // empty string
+}
+
+
+TEST(TrajectoryException, CopyConstructor)
+{
+    const char* msg = "copy test";
+    const std::int32_t code = 7;
+
+    mppe::TrajectoryException original(code, msg);
+    mppe::TrajectoryException copy(original);   // copy ctor
+
+    EXPECT_EQ(copy.value(), original.value());
+    EXPECT_EQ(what_str(copy), what_str(original));
+}
+
+TEST(TrajectoryException, AssignmentOperator)
+{
+    mppe::TrajectoryException src(123, "src");
+    mppe::TrajectoryException dst;   // default‑constructed (value = -1, empty msg)
+
+    dst = src;                       // copy‑assignment (compiler‑generated)
+
+    EXPECT_EQ(dst.value(), src.value());
+
+    // Two ways to compare the stored messages:
+    //  • using the helper we wrote:
+    EXPECT_EQ(what_str(dst), what_str(src));
+    //  • or directly with Google‑Test’s built‑in C‑string comparator:
+    // EXPECT_STREQ(dst.what(), src.what());
+}
+
+
+
 */
